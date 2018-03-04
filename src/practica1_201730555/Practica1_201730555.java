@@ -18,10 +18,12 @@ public class Practica1_201730555 {
     public static String [][] jugadores= new String [3][2];
     public static String [][] tablero= new String [20][10];
     public static String [][] tableromm= new String [20][10];
+    public static  int [][] ab= new int [3][40];
     public static boolean Dificultad=false;
     public static int subidas=5;
     public static int bajadas=5;
     public static int rangox=0, rangoy=0;
+    public static int espacioSubidas=1, espacioBajadas=1;
     public static void DificultadDelJuego (){
         Scanner in = new Scanner(System.in);
         int op=0;
@@ -108,23 +110,37 @@ public class Practica1_201730555 {
         String pausa;
         System.out.println("Presiona Enter para continuar");
         pausa=in.nextLine();
-        int subir1=0, subir2=0;
+        int subir1=0, subir2=0, rangoMax=0;
         if(Dificultad){
-            subir1=20; subir2=40;
+            subir1=20; subir2=40; rangoMax=20;
         }else{
-            subir1=5; subir2=10;
+            subir1=5; subir2=10; rangoMax=5;
         }
         do{
           limpiar_pantalla(12);  
           if((subidas<subir1) || (subidas>subir2)){
               System.out.println("Error en la cantidad de subidas, debe pertenecer al rango de "+subir1+" y "+subir2+"\n Intentalo de nuevo...");
           } 
+          if((espacioSubidas<0) || (espacioSubidas>rangoMax)){
+              System.out.println("Error en la cantidad de espacios para avanzar, debe pertenecer al rango de "+1+" y "+rangoMax+"\n Intentalo de nuevo...");
+          }
+           if((bajadas<subir1) || (bajadas>subir2)){
+              System.out.println("Error en la cantidad de bajadas, debe pertenecer al rango de "+subir1+" y "+subir2+"\n Intentalo de nuevo...");
+          } 
+          if((espacioBajadas<0) || (espacioBajadas>rangoMax)){
+              System.out.println("Error en la cantidad de espacios para retroceder, debe pertenecer al rango de "+1+" y "+rangoMax+"\n Intentalo de nuevo...");
+          }
           System.out.println("Ingresa la cantidad de subidas: ");
           subidas =in.nextInt();
-          limpiar_pantalla(12);
+          limpiar_pantalla(20);
+          System.out.println("Ingresa la cantidad de espacios para avanzar: ");
+          espacioSubidas=in.nextInt();
+          limpiar_pantalla(20);
           System.out.println("Ingresa la cantidad de bajadas: ");
           bajadas=in.nextInt();
-        }while((subidas<subir1) || (subidas>subir2) || (bajadas<subir1) || (bajadas>subir2));
+          System.out.println("Ingresa la cantidad de espacios para retroceder: ");
+          espacioBajadas=in.nextInt();
+        }while((subidas<subir1) || (subidas>subir2) || (bajadas<subir1) || (bajadas>subir2) || (espacioSubidas>rangoMax) || (espacioSubidas<0) || (espacioBajadas>rangoMax) || (espacioBajadas<0));
     }
     public static void Tablero(int x, int y){
         int r1=9,r2=0;
@@ -137,14 +153,12 @@ public class Practica1_201730555 {
            
         }
         for (int f=1; f<=y; f++){
-            
                         for (int i=1; i<=x; i++){
                             
                             if(r2!=0){
                                 System.out.print("-------");  
                             }
-                            else
-                            {
+                            else{
                         System.out.print("------");
                             }
                        
@@ -186,12 +200,59 @@ public class Practica1_201730555 {
                         System.out.println("");  
                         for (int i=1; i<=x; i++){
                             if(r2!=0){
-                                System.out.print("|     |");  
+                                 boolean baj=false;
+                                boolean sub=false;
+                                   for (int w=0; w<subidas; w++){
+                                   if((Integer.parseInt(tablero[(i-1)][((y-1)-(f-1))]))==ab[0][w]){
+                                   sub=true;
+                                   }
+                                    }
+                                   for (int w=0; w<bajadas; w++){
+                                   if((Integer.parseInt(tablero[(i-1)][((y-1)-(f-1))]))==ab[1][w]){
+                                   baj=true;
+                                   }
+                                    }
+                                   if(Integer.parseInt(tablero[(i-1)][((y-1)-(f-1))])==(rangox*rangoy)){
+                                        System.out.print("|  $  |"); 
+                                   }
+                                   else if(sub){
+                                        System.out.print("|  +  |"); 
+                                   }
+                                   else if(baj){
+                                        System.out.print("|  -  |");
+                                   }
+                                   else{
+                                        System.out.print("|     |");  
+                                   }
+                                 
                             }
                             else
                             {
-                        System.out.print("|    |");  
-                        
+                                boolean baj=false;
+                                boolean sub=false;
+                                   for (int w=0; w<subidas; w++){
+                                   if((Integer.parseInt(tablero[(i-1)][((y-1)-(f-1))]))==ab[0][w]){
+                                   sub=true;
+                                   }
+                                    }
+                                   for (int w=0; w<bajadas; w++){
+                                   if((Integer.parseInt(tablero[(i-1)][((y-1)-(f-1))]))==ab[1][w]){
+                                   baj=true;
+                                   }
+                                    }
+                                   if(Integer.parseInt(tablero[(i-1)][((y-1)-(f-1))])==(rangox*rangoy)){
+                                       System.out.print("|  $ |"); 
+                                   }
+                                   else if(sub){
+                                        System.out.print("|  + |"); 
+                                   }
+                                   else if(baj){
+                                        System.out.print("|  - |");
+                                   }
+                                   else{
+                                       System.out.print("|    |"); 
+                                   }
+                            
                             }
                         }
                          System.out.println("");  
@@ -223,7 +284,14 @@ public class Practica1_201730555 {
     }
     public static void Jugadas(){
         Scanner in = new Scanner(System.in);
-        int movimiento=0;
+        int movimiento=0, tiro=0;
+        if(Dificultad){
+            tiro=12;
+        }
+        else{
+            tiro=6;
+        }
+        movimiento = (int) (Math.random()*tiro)+1;
         System.out.println("Jugador "+jugadores[0][0]+"Se mueve "+movimiento+" casillas.");
         System.out.println("Presiona Enter para continuar...");
         String pausa;
@@ -248,31 +316,49 @@ public class Practica1_201730555 {
             }
             lado=!lado;
         }
-        int [][] ab= new int [3][40];
+       
+        int contador=0;
         for (int w=0; w<subidas; w++){
-                ab[0][w]= (int)(Math.random()*rangox);
-                ab[1][w]= (int)(Math.random()*rangoy);
-            for(int r=0; r<w; r++){
-             if(((ab[0][w]==ab[0][r])&&(ab[1][w]== ab[1][r]))){
-                w--;
-             } 
-             else if (((ab[0][w]==(ab[0][r]+1))&&(ab[1][w]== ab[1][r]))){
-                w--;
-             } 
-             else if (((ab[0][w]==(ab[0][r]-1))&&(ab[1][w]== ab[1][r]))){
-                w--;
-             } 
-             else if (((ab[0][w]==ab[0][r])&&(ab[1][w]== (ab[1][r]+1)))){
-                w--;
-             } 
-             else if (((ab[0][w]==ab[0][r])&&(ab[1][w]== (ab[1][r])))){
-                w--;
-             }
-            }   
-            
-            
+                ab[0][w]= (int)(Math.random()*((rangox*rangoy)-1))+1; 
+                for(int i=0; i<=w; i++){
+                    if(ab[0][w]==ab[0][i]){
+                        contador++;
+                    }
+                    if(Math.abs(ab[0][w]-ab[0][i])==1){
+                        contador++;
+                    }
+                }
+                if(contador>1){
+                    w--;
+                }
+                contador=0;
+        }
+        for (int w=0; w<bajadas; w++){
+                ab[1][w]= (int)(Math.random()*((rangox*rangoy)-1))+1;
+                for(int i=0; i<=w; i++){
+                    if(ab[1][w]==ab[1][i]){
+                        contador++;
+                    }
+                    if(Math.abs(ab[1][w]-ab[1][i])==1){
+                        contador++;
+                                
+                    }
+                }
+                for(int h=0; h<subidas; h++){
+                    if(ab[1][w]==ab[0][h]){
+                        contador++;
+                    }
+                    if(Math.abs(ab[1][w]-ab[0][h])==1){
+                        contador++;
+                    }
+                }
+                if(contador>1){
+                    w--;
+                }
+                contador=0;
         }
         for(int s=0; s<subidas; s++){
+            
             System.out.println("La posicion x es: "+ab[0][s]);
             System.out.println("La posicion y es: "+ab[1][s]);
         }
@@ -288,7 +374,7 @@ public class Practica1_201730555 {
         Scanner in = new Scanner(System.in);
         int op=0;
         while (op!=4){
-        limpiar_pantalla(8);
+        limpiar_pantalla(20);
         System.out.println("Menú principal\n\n 1. Dificultad del juego\n 2. Parámetros iniciales\n 3. Iniciar juego\n 4. Salir\n");
         System.out.println("Elige una opción: ");
         op=in.nextInt(); 
@@ -301,6 +387,7 @@ public class Practica1_201730555 {
             }break;
             case 3:{
                 Llenado();
+                Tablero(rangox,rangoy);
             }
         }
         }
