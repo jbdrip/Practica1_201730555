@@ -7,7 +7,7 @@ package practica1_201730555;
 import java.util.Scanner;
 /**
  *
- * @author Jose
+ * @author Javier
  */
 public class Practica1_201730555 {
 
@@ -15,13 +15,15 @@ public class Practica1_201730555 {
      * @param args the command line arguments
      */
     public static int cantJugadores=2; 
-    public static String [][] jugadores= new String [3][2];
+    public static String [][] jugadores= new String [5][5];
     public static String [][] tablero= new String [20][10];
     public static String [][] tableromm= new String [20][10];
     public static  int [][] ab= new int [3][40];
     public static boolean Dificultad=false;
+    public static boolean Ganar=false;
     public static int subidas=5;
     public static int bajadas=5;
+    public static int posicionActual=0;
     public static int rangox=0, rangoy=0;
     public static int espacioSubidas=1, espacioBajadas=1;
     public static void DificultadDelJuego (){
@@ -84,17 +86,16 @@ public class Practica1_201730555 {
         Scanner in = new Scanner(System.in);
         for(int i=0; i<cantJugadores; i++){
                 System.out.println("Ingresa el nombre del jugador "+(i+1)+":");
-                jugadores[i][0]=in.nextLine();   
+                jugadores[0][i]=in.nextLine();   
         }
- 
     }
     public static void SimboloJugadores (){
         Scanner in = new Scanner(System.in);
         for(int i=0; i<cantJugadores; i++){
                 limpiar_pantalla(12);
                 System.out.println("Ingresa el símbolo del jugador "+(i+1)+":");
-                jugadores[i][1]=in.nextLine(); 
-                if((jugadores[i][1].equals("$")==true) || (jugadores[i][1].equals("+")==true) || (jugadores[i][1].equals("-")==true)){
+                jugadores[1][i]=in.nextLine(); 
+                if((jugadores[1][i].equals("$")==true) || (jugadores[1][i].equals("+")==true) || (jugadores[1][i].equals("-")==true)){
                     System.out.println("Símbolo no permitido, inténtalo de nuevo. ");
                     i--;
                     String pausa;
@@ -189,11 +190,44 @@ public class Practica1_201730555 {
                         System.out.println(""); 
                         for (int i=1; i<=x; i++){
                             if(r2!=0){
-                                System.out.print("|     |");  
+                                boolean jugada=false;
+                                 int jugg=0;
+                                for (int w=0; w<cantJugadores; w++){
+                                    if((Integer.parseInt(tablero[(i-1)][((y-1)-(f-1))]))==(Integer.parseInt(jugadores[2][w]))){
+                                    jugada=true;
+                                    jugg=w;
+                                    }
+                                    }
+                                if(jugada)
+                                {
+                                    System.out.print("|   "+jugadores[1][jugg]+ " |");  
+                                }
+                                else
+                                {
+                                    System.out.print("|     |");  
+                                }
+                                  
                             }
                             else
                             {
-                                System.out.print("|    |");  
+                                 boolean jugada=false;
+                                 int jugg=0;
+                                for (int w=0; w<cantJugadores; w++){
+                                    if((Integer.parseInt(tablero[(i-1)][((y-1)-(f-1))]))==(Integer.parseInt(jugadores[2][w]))){
+                                    jugada=true;
+                                    jugg=w;
+                                    }
+                                    }
+                                if(jugada)
+                                {
+                                    System.out.print("|  "+jugadores[1][jugg]+ " |");  
+                                }
+                                else
+                                {
+                                    System.out.print("|    |");  
+                                }
+                                
+                                
                             }
                         
                         }
@@ -274,15 +308,58 @@ public class Practica1_201730555 {
         NombreDeJugadores ();
         boolean simbolo=false;
         for(int i=0; i<cantJugadores; i++){
-            if(jugadores[i][1]==null){
+            if(jugadores[1][i]==null){
                 simbolo=true;
             }
         }
         if(simbolo){
           SimboloJugadores();  
-        }     
+        } 
+        Llenado();
+        Tablero(rangox,rangoy);
+        int pos=0; 
+        while(!Ganar){
+            boolean simb=false;
+            boolean baj=false;
+            for(int u=0; u<subidas; u++){
+                if(ab[0][u]==Integer.parseInt(jugadores[2][pos])){
+                    simb=true;
+                }
+            }
+            for(int u=0; u<bajadas; u++){
+                if(ab[1][u]==Integer.parseInt(jugadores[2][pos])){
+                    baj=true;
+                }
+            }
+            if(simb){
+                SubidasYBajones(pos,false);
+            }
+            else if(baj){
+                SubidasYBajones(pos,true);
+            }
+            else{
+                Jugadas(pos);
+            }
+            if(Integer.parseInt(jugadores[2][pos])>=(rangox*rangoy)){
+                Scanner in = new Scanner(System.in);
+                Ganar=true;
+                limpiar_pantalla(20);
+                System.out.println("¡¡¡¡¡¡¡¡¡¡¡¡¡Felicidades jugador "+jugadores[0][pos]+" ha ganado!!!!!!!!!!!!!");
+                System.out.println("Presiona Enter para continuar...");
+                String pausa;
+                pausa=in.nextLine();
+               
+            }
+            if(pos==(cantJugadores-1)){
+                pos=0;
+            }
+            else
+            {
+            pos++;
+             }
+        }
     }
-    public static void Jugadas(){
+    public static void Jugadas(int j){
         Scanner in = new Scanner(System.in);
         int movimiento=0, tiro=0;
         if(Dificultad){
@@ -292,11 +369,39 @@ public class Practica1_201730555 {
             tiro=6;
         }
         movimiento = (int) (Math.random()*tiro)+1;
-        System.out.println("Jugador "+jugadores[0][0]+"Se mueve "+movimiento+" casillas.");
+        System.out.println("Posicion Actual: "+jugadores[2][j]);
+        jugadores[2][j]= String.valueOf(Integer.parseInt(jugadores[2][j])+movimiento);
+        System.out.println("Jugador "+jugadores[0][j]+" Se mueve "+movimiento+" casillas.");
+        System.out.println("Posicion Nueva: "+jugadores[2][j]);
         System.out.println("Presiona Enter para continuar...");
         String pausa;
         pausa=in.nextLine();
-        
+        limpiar_pantalla(20);
+        Tablero(rangox,rangoy);
+    }
+      public static void SubidasYBajones(int j,boolean tipo){
+        int movimiento=0;
+        if(tipo){
+            movimiento=-bajadas;
+        }
+        else{
+            movimiento=subidas;
+        }
+        Scanner in = new Scanner(System.in);
+        System.out.println("Posicion Actual: "+jugadores[2][j]);
+        if((Integer.parseInt(jugadores[2][j])+movimiento)<0){
+            jugadores[2][j]="0";
+        }
+        else{
+         jugadores[2][j]= String.valueOf(Integer.parseInt(jugadores[2][j])+movimiento);   
+        }
+        System.out.println("Jugador "+jugadores[0][j]+" Se mueve "+movimiento+" casillas por caer en una casilla especial.");
+        System.out.println("Posicion Nueva: "+jugadores[2][j]);
+        System.out.println("Presiona Enter para continuar...");
+        String pausa;
+        pausa=in.nextLine();
+        limpiar_pantalla(20);
+        Tablero(rangox,rangoy);
     }
     public static void Llenado (){
         boolean lado = false; 
@@ -362,7 +467,9 @@ public class Practica1_201730555 {
             System.out.println("La posicion x es: "+ab[0][s]);
             System.out.println("La posicion y es: "+ab[1][s]);
         }
-        
+        for(int s=0; s<cantJugadores; s++){
+            jugadores[2][s]="0";
+        }
         
     }
     public static void limpiar_pantalla(int espacios){
@@ -386,8 +493,7 @@ public class Practica1_201730555 {
                 ParametrosIniciales();
             }break;
             case 3:{
-                Llenado();
-                Tablero(rangox,rangoy);
+                IniciarJuego();
             }
         }
         }
