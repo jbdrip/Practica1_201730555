@@ -379,7 +379,7 @@ public class Practica1_201730555 {
         limpiar_pantalla(20);
         Tablero(rangox,rangoy);
     }
-      public static void SubidasYBajones(int j,boolean tipo){
+    public static void SubidasYBajones(int j,boolean tipo){
         int movimiento=0;
         if(tipo){
             movimiento=-bajadas;
