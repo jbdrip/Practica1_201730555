@@ -12,6 +12,7 @@ import java.util.Scanner;
 public class Practica1_201730555 {
 
     /**
+    /**
      * @param args the command line arguments
      */
     public static int cantJugadores=2; 
@@ -26,16 +27,22 @@ public class Practica1_201730555 {
     public static int posicionActual=0;
     public static int rangox=0, rangoy=0;
     public static int espacioSubidas=1, espacioBajadas=1;
+    
     public static void DificultadDelJuego (){
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                jugadores[i][j]=null;
+            }
+        }
         Scanner in = new Scanner(System.in);
         int op=0;
         String pausa;
         while(op!=3){
-        limpiar_pantalla(8);
+        limpiar_pantalla(20);
         System.out.println("Dificultad del juego\n\n 1. Fácil\n 2. Difícil\n 3. Regresar\n");
         System.out.println("Elige una opción: ");
         op=in.nextInt();
-        limpiar_pantalla(9);
+        limpiar_pantalla(20);
         switch(op){
             case 1:{
                 Dificultad=false;
@@ -58,14 +65,14 @@ public class Practica1_201730555 {
         Scanner in = new Scanner(System.in);
         int op=0;
         while(op!=3){
-        limpiar_pantalla(8);
+        limpiar_pantalla(20);
         System.out.println("Parámetros iniciales\n\n 1. Jugadores\n 2. Subidas y bajones\n 3. Regresar\n");
         System.out.println("Elige una opción: ");
         op=in.nextInt();
         switch(op){
             case 1:{
                 do{
-                limpiar_pantalla(12);   
+                limpiar_pantalla(20);   
                 if((cantJugadores!=2)&&(cantJugadores!=3)){
                     System.out.println("Cantidad de jugadores inválida, inténtalo de nuevo");
                 }   
@@ -92,7 +99,7 @@ public class Practica1_201730555 {
     public static void SimboloJugadores (){
         Scanner in = new Scanner(System.in);
         for(int i=0; i<cantJugadores; i++){
-                limpiar_pantalla(12);
+                limpiar_pantalla(20);
                 System.out.println("Ingresa el símbolo del jugador "+(i+1)+":");
                 jugadores[1][i]=in.nextLine(); 
                 if((jugadores[1][i].equals("$")==true) || (jugadores[1][i].equals("+")==true) || (jugadores[1][i].equals("-")==true)){
@@ -106,7 +113,7 @@ public class Practica1_201730555 {
     }
     public static void SeleccionarSubidasYBajones (){
         Scanner in=new Scanner(System.in);
-        limpiar_pantalla(12);
+        limpiar_pantalla(20);
         System.out.println("Los parámetros iniciales son:\n Cantidad de subidas: "+subidas+"\nCantidad de bajadas: "+bajadas);
         String pausa;
         System.out.println("Presiona Enter para continuar");
@@ -118,7 +125,7 @@ public class Practica1_201730555 {
             subir1=5; subir2=10; rangoMax=5;
         }
         do{
-          limpiar_pantalla(12);  
+          limpiar_pantalla(20);  
           if((subidas<subir1) || (subidas>subir2)){
               System.out.println("Error en la cantidad de subidas, debe pertenecer al rango de "+subir1+" y "+subir2+"\n Intentalo de nuevo...");
           } 
@@ -318,6 +325,7 @@ public class Practica1_201730555 {
         Llenado();
         Tablero(rangox,rangoy);
         int pos=0; 
+        Ganar=false;
         while(!Ganar){
             boolean simb=false;
             boolean baj=false;
@@ -461,11 +469,6 @@ public class Practica1_201730555 {
                     w--;
                 }
                 contador=0;
-        }
-        for(int s=0; s<subidas; s++){
-            
-            System.out.println("La posicion x es: "+ab[0][s]);
-            System.out.println("La posicion y es: "+ab[1][s]);
         }
         for(int s=0; s<cantJugadores; s++){
             jugadores[2][s]="0";
